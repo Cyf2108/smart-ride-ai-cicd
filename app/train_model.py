@@ -19,4 +19,4 @@ model.fit(X, y)
 with open("model.pkl", "wb") as f:
     pickle.dump(model, f)
 
-print("✅ AI model trained and saved as model.pkl")
+print("AI model trained and saved as model.pkl")
