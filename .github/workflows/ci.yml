@@ -6,6 +6,7 @@ on:
       - main
 
 jobs:
+
   build:
 
     runs-on: ubuntu-latest
@@ -15,14 +16,23 @@ jobs:
     - name: Checkout source code
       uses: actions/checkout@v4
 
+
     - name: Setup Python
       uses: actions/setup-python@v5
       with:
         python-version: "3.14"
 
+
     - name: Install dependencies
       run: |
         pip install -r app/requirements.txt
+
+
+    - name: Run automated tests
+      run: |
+        cd app
+        pytest
+
 
     - name: Build Docker image
       run: |

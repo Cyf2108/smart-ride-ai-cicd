@@ -1,44 +1,328 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Smart Ride Fare Predictor</title>
+    <title>Smart Ride AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            width: 100%;
+            max-width: 900px;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .header {
+            text-align: center;
+        }
+
+        .header h1 {
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #666;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: #667eea;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .result {
+            text-align: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+            margin-top: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        @media(max-width:700px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+
 </head>
+
 <body>
-    <h1>Smart Ride Fare Predictor</h1>
 
-    <form id="fareForm">
-        <label>Distance (km):</label>
-        <input type="number" step="0.01" id="distance_km" required><br><br>
+<div class="container">
 
-        <label>Traffic Level (1-5):</label>
-        <input type="number" id="traffic_level" min="1" max="5" required><br><br>
+    <div class="header">
+        <h1>Smart Ride AI</h1>
+        <p>AI-powered ride fare prediction system</p>
+    </div>
 
-        <button type="submit">Predict Fare</button>
-    </form>
 
-    <h2 id="result"></h2>
+    <div class="dashboard">
 
-    <script>
-        document.getElementById("fareForm").addEventListener("submit", async function(e) {
-            e.preventDefault();
 
-            const distance = document.getElementById("distance_km").value;
-            const traffic = document.getElementById("traffic_level").value;
+        <div class="card">
 
-            const response = await fetch("/predict", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    distance_km: parseFloat(distance),
-                    traffic_level: parseInt(traffic)
-                })
-            });
+            <h2>Predict Fare</h2>
 
-            const data = await response.json();
-            document.getElementById("result").innerText = data.predicted_fare;
-        });
-    </script>
+            <form id="fareForm">
+
+                <label>Distance (km)</label>
+                <input 
+                    type="number" 
+                    step="0.01"
+                    id="distance_km"
+                    placeholder="Example: 10.5"
+                    required>
+
+
+			<label>Traffic Condition</label>
+
+			<select id="traffic_level">
+
+				<option value="1">
+					Very Low Traffic
+				</option>
+
+				<option value="2">
+					Low Traffic
+				</option>
+
+				<option value="3">
+					Moderate Traffic
+				</option>
+
+				<option value="4">
+					High Traffic
+				</option>
+
+				<option value="5">
+					Very High Traffic
+				</option>
+
+			</select>
+
+
+                <button type="submit">
+                    Predict Fare
+                </button>
+
+
+            </form>
+
+
+        </div>
+
+
+
+        <div class="card">
+
+            <h2>Prediction Result</h2>
+
+            <div class="result" id="result">
+                RM -
+            </div>
+
+            <p>
+                Powered by Random Forest Regression Model
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+
+    <div class="card" style="margin-top:25px">
+
+        <h2>Recent Predictions</h2>
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Distance</th>
+                    <th>Traffic</th>
+                    <th>Fare</th>
+                </tr>
+            </thead>
+
+            <tbody id="history">
+
+            </tbody>
+
+        </table>
+
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+document.getElementById("fareForm")
+.addEventListener("submit", async function(e){
+
+    e.preventDefault();
+
+
+    const distance =
+        document.getElementById("distance_km").value;
+
+
+    const traffic =
+        document.getElementById("traffic_level").value;
+
+
+
+    const response = await fetch("/predict", {
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+
+            distance_km:parseFloat(distance),
+
+            traffic_level:parseInt(traffic)
+
+        })
+
+    });
+
+
+    const data = await response.json();
+
+
+    document.getElementById("result")
+    .innerText=data.predicted_fare;
+
+
+    loadHistory();
+
+});
+
+
+
+async function loadHistory(){
+
+
+    const response = await fetch("/history");
+
+    const data = await response.json();
+
+
+    const table =
+        document.getElementById("history");
+
+
+    table.innerHTML="";
+
+
+    data.reverse().slice(0,5).forEach(item=>{
+
+
+        table.innerHTML += `
+
+        <tr>
+
+            <td>${item.created_at}</td>
+
+            <td>${item.distance_km} km</td>
+
+            <td>${item.traffic_level}</td>
+
+            <td>${item.predicted_fare}</td>
+
+        </tr>
+
+        `;
+
+
+    });
+
+
+}
+
+
+loadHistory();
+
+
+</script>
+
 </body>
 </html>

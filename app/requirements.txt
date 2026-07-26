@@ -6,3 +6,5 @@ pandas
 python-multipart
 pytest
 httpx
+supabase
+python-dotenv
