@@ -3,9 +3,9 @@ import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 
 data = {
-    "distance_km": [2, 5, 10, 3, 8, 15, 20, 7, 12],
+    "distance_km":   [2, 5, 10, 3, 8, 15, 20, 7, 12],
     "traffic_level": [1, 2, 3, 1, 2, 3, 3, 2, 1],
-    "fare": [6, 12, 25, 8, 18, 40, 55, 16, 28]
+    "fare":          [6, 10, 20, 7, 18, 40, 45, 12, 22]
 }
 
 df = pd.DataFrame(data)
