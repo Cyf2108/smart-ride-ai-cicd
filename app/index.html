@@ -229,19 +229,52 @@
 
 <script>
 
-
 document.getElementById("fareForm")
 .addEventListener("submit", async function(e){
 
     e.preventDefault();
 
 
-    const distance =
+    const distanceInput =
         document.getElementById("distance_km").value;
 
 
     const traffic =
         document.getElementById("traffic_level").value;
+
+
+    const result =
+        document.getElementById("result");
+
+
+    const distance = parseFloat(distanceInput);
+
+
+
+    // Validation
+    if (distanceInput === "" || isNaN(distance)) {
+
+        result.innerText = "Please enter a valid distance";
+
+        return;
+    }
+
+
+    if (distance <= 0) {
+
+        result.innerText = "Distance must be greater than 0 km";
+
+        return;
+    }
+
+
+
+    if (distance > 500) {
+
+        result.innerText = "Distance is too large";
+
+        return;
+    }
 
 
 
@@ -255,25 +288,38 @@ document.getElementById("fareForm")
 
         body:JSON.stringify({
 
-            distance_km:parseFloat(distance),
+            distance_km: distance,
 
-            traffic_level:parseInt(traffic)
+            traffic_level: parseInt(traffic)
 
         })
 
     });
 
 
+
     const data = await response.json();
 
 
-    document.getElementById("result")
-    .innerText=data.predicted_fare;
 
+    if(response.ok){
 
-    loadHistory();
+        result.innerText = data.predicted_fare;
+
+        loadHistory();
+
+    }
+    else{
+
+        result.innerText =
+        "Unable to predict fare";
+
+    }
+
 
 });
+
+
 
 
 
